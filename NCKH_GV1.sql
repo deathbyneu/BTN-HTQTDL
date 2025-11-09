@@ -6,12 +6,12 @@ GO
 --NHÓM BẢNG ĐỀ TÀI
 --BẢNG 1: CẤP ĐỀ TÀI
 CREATE TABLE CAP_DETAI(
-	MACAP CHAR(10) PRIMARY KEY,
+	MACAP CHAR(10) PRIMARY KEY NOT NULL,
 	TENCAP NVARCHAR(100) NOT NULL
 )
 --BẢNG 2: LĨNH VỰC
 CREATE TABLE LINHVUC(
-	MALINHVUC CHAR(10) PRIMARY KEY,
+	MALINHVUC CHAR(10) PRIMARY KEY NOT NULL,
 	TENLINHVUC NVARCHAR(100) NOT NULL
 )
 --BẢNG 3: ĐỀ TÀI
@@ -327,14 +327,14 @@ BEGIN
     -- Kiểm tra Lĩnh vực đã tồn tại chưa
     IF EXISTS (SELECT 1 FROM LINHVUC WHERE MALINHVUC = @MALINHVUC)
     BEGIN
-        RAISERROR(N'Mã Lĩnh vực đã tồn tại.', 16, 1)
+        PRINT(N'Mã Lĩnh vực đã tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra tên có bị trùng không (Tùy chọn)
     IF EXISTS (SELECT 1 FROM LINHVUC WHERE TENLINHVUC = @TENLINHVUC)
     BEGIN
-        RAISERROR(N'Tên Lĩnh vực đã tồn tại.', 16, 1)
+        PRINT(N'Tên Lĩnh vực đã tồn tại.', 16, 1)
         RETURN
     END
 
@@ -351,7 +351,7 @@ BEGIN
     -- Kiểm tra Lĩnh vực có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM LINHVUC WHERE MALINHVUC = @MALINHVUC)
     BEGIN
-        RAISERROR(N'Mã Lĩnh vực không tồn tại.', 16, 1)
+        PRINT(N'Mã Lĩnh vực không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -368,7 +368,7 @@ BEGIN
     -- Kiểm tra ràng buộc: Đề tài (DETAI)
     IF EXISTS (SELECT 1 FROM DETAI WHERE MALINHVUC = @MALINHVUC)
     BEGIN
-        RAISERROR(N'Không thể xóa. Có đề tài thuộc lĩnh vực này.', 16, 1)
+        PRINT(N'Không thể xóa. Có đề tài thuộc lĩnh vực này.', 16, 1)
         RETURN
     END
 
@@ -389,14 +389,14 @@ BEGIN
     -- Kiểm tra ràng buộc: CAP_DETAI
     IF NOT EXISTS (SELECT 1 FROM CAP_DETAI WHERE MACAP = @MACAP)
     BEGIN
-        RAISERROR(N'Mã Cấp Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Cấp Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: LINHVUC
     IF NOT EXISTS (SELECT 1 FROM LINHVUC WHERE MALINHVUC = @MALINHVUC)
     BEGIN
-        RAISERROR(N'Mã Lĩnh vực không tồn tại.', 16, 1)
+        PRINT(N'Mã Lĩnh vực không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -417,21 +417,21 @@ BEGIN
     -- Kiểm tra Đề tài có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: CAP_DETAI (nếu thay đổi)
     IF NOT EXISTS (SELECT 1 FROM CAP_DETAI WHERE MACAP = @MACAP)
     BEGIN
-        RAISERROR(N'Mã Cấp Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Cấp Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: LINHVUC (nếu thay đổi)
     IF NOT EXISTS (SELECT 1 FROM LINHVUC WHERE MALINHVUC = @MALINHVUC)
     BEGIN
-        RAISERROR(N'Mã Lĩnh vực không tồn tại.', 16, 1)
+        PRINT(N'Mã Lĩnh vực không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -452,35 +452,35 @@ BEGIN
     -- Kiểm tra ràng buộc: KETQUA
     IF EXISTS (SELECT 1 FROM KETQUA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không thể xóa. Đề tài có Kết quả nghiên cứu.', 16, 1)
+        PRINT(N'Không thể xóa. Đề tài có Kết quả nghiên cứu.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: CHIPHI
     IF EXISTS (SELECT 1 FROM CHIPHI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không thể xóa. Đề tài có Chi phí.', 16, 1)
+        PRINT(N'Không thể xóa. Đề tài có Chi phí.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: NHOM_DETAI
     IF EXISTS (SELECT 1 FROM NHOM_DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không thể xóa. Đề tài có Nhóm thực hiện.', 16, 1)
+        PRINT(N'Không thể xóa. Đề tài có Nhóm thực hiện.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: DANHGIA
     IF EXISTS (SELECT 1 FROM DANHGIA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không thể xóa. Đề tài đã có Đánh giá.', 16, 1)
+        PRINT(N'Không thể xóa. Đề tài đã có Đánh giá.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: KETQUA_DANHGIA
     IF EXISTS (SELECT 1 FROM KETQUA_DANHGIA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không thể xóa. Đề tài có Kết quả Đánh giá.', 16, 1)
+        PRINT(N'Không thể xóa. Đề tài có Kết quả Đánh giá.', 16, 1)
         RETURN
     END
 
@@ -498,14 +498,14 @@ BEGIN
     -- Kiểm tra ràng buộc: DETAI
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra Kết quả đã tồn tại chưa (vì MADETAI là Primary Key)
     IF EXISTS (SELECT 1 FROM KETQUA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này đã có Kết quả. Vui lòng sử dụng thủ tục Sửa.', 16, 1)
+        PRINT(N'Đề tài này đã có Kết quả. Vui lòng sử dụng thủ tục Sửa.', 16, 1)
         RETURN
     END
 
@@ -523,7 +523,7 @@ BEGIN
     -- Kiểm tra Kết quả có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM KETQUA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này chưa có Kết quả để sửa. Vui lòng sử dụng thủ tục Thêm.', 16, 1)
+        PRINT(N'Đề tài này chưa có Kết quả để sửa. Vui lòng sử dụng thủ tục Thêm.', 16, 1)
         RETURN
     END
 
@@ -541,7 +541,7 @@ BEGIN
     -- Kiểm tra Kết quả có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM KETQUA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này không có Kết quả để xóa.', 16, 1)
+        PRINT(N'Đề tài này không có Kết quả để xóa.', 16, 1)
         RETURN
     END
 
@@ -562,14 +562,14 @@ BEGIN
     -- Kiểm tra ràng buộc: DETAI
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra Mã Chi phí đã tồn tại chưa
     IF EXISTS (SELECT 1 FROM CHIPHI WHERE MACHI = @MACHI)
     BEGIN
-        RAISERROR(N'Mã Chi phí đã tồn tại.', 16, 1)
+        PRINT(N'Mã Chi phí đã tồn tại.', 16, 1)
         RETURN
     END
 
@@ -590,14 +590,14 @@ BEGIN
     -- Kiểm tra Chi phí có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM CHIPHI WHERE MACHI = @MACHI)
     BEGIN
-        RAISERROR(N'Mã Chi phí không tồn tại.', 16, 1)
+        PRINT(N'Mã Chi phí không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: DETAI (nếu có thay đổi MADETAI)
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -618,7 +618,7 @@ BEGIN
     -- Kiểm tra Chi phí có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM CHIPHI WHERE MACHI = @MACHI)
     BEGIN
-        RAISERROR(N'Mã Chi phí không tồn tại.', 16, 1)
+        PRINT(N'Mã Chi phí không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -638,14 +638,14 @@ BEGIN
     -- Kiểm tra ràng buộc: KHOA
     IF NOT EXISTS (SELECT 1 FROM KHOA WHERE MAKHOA = @MAKHOA)
     BEGIN
-        RAISERROR(N'Mã Khoa không tồn tại.', 16, 1)
+        PRINT(N'Mã Khoa không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra Mã Giảng viên đã tồn tại chưa
     IF EXISTS (SELECT 1 FROM GIANGVIEN WHERE MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Mã Giảng viên đã tồn tại.', 16, 1)
+        PRINT(N'Mã Giảng viên đã tồn tại.', 16, 1)
         RETURN
     END
 
@@ -665,14 +665,14 @@ BEGIN
     -- Kiểm tra Giảng viên có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM GIANGVIEN WHERE MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Mã Giảng viên không tồn tại.', 16, 1)
+        PRINT(N'Mã Giảng viên không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: KHOA (nếu có thay đổi MAKHOA)
     IF NOT EXISTS (SELECT 1 FROM KHOA WHERE MAKHOA = @MAKHOA)
     BEGIN
-        RAISERROR(N'Mã Khoa không tồn tại.', 16, 1)
+        PRINT(N'Mã Khoa không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -692,14 +692,14 @@ BEGIN
     -- Kiểm tra ràng buộc: Giảng viên có là TRƯỞNG NHÓM của đề tài nào không
     IF EXISTS (SELECT 1 FROM NHOM_DETAI WHERE TRUONGNHOM = @MAGV)
     BEGIN
-        RAISERROR(N'Không thể xóa. Giảng viên đang là Trưởng nhóm Đề tài.', 16, 1)
+        PRINT(N'Không thể xóa. Giảng viên đang là Trưởng nhóm Đề tài.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: Giảng viên có là THÀNH VIÊN NHÓM của đề tài nào không
     IF EXISTS (SELECT 1 FROM THANHVIEN_NHOM WHERE MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Không thể xóa. Giảng viên đang là Thành viên Nhóm Đề tài.', 16, 1)
+        PRINT(N'Không thể xóa. Giảng viên đang là Thành viên Nhóm Đề tài.', 16, 1)
         RETURN
     END
 
@@ -723,21 +723,21 @@ BEGIN
     -- Kiểm tra ràng buộc: DETAI
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: GIANGVIEN (Trưởng nhóm)
     IF NOT EXISTS (SELECT 1 FROM GIANGVIEN WHERE MAGV = @TRUONGNHOM)
     BEGIN
-        RAISERROR(N'Mã Trưởng nhóm không tồn tại.', 16, 1)
+        PRINT(N'Mã Trưởng nhóm không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra Đề tài đã có nhóm chưa (Nếu mỗi Đề tài chỉ có 1 nhóm)
     IF EXISTS (SELECT 1 FROM NHOM_DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này đã có Nhóm thực hiện.', 16, 1)
+        PRINT(N'Đề tài này đã có Nhóm thực hiện.', 16, 1)
         RETURN
     END
 
@@ -757,28 +757,28 @@ BEGIN
     -- Kiểm tra Nhóm Đề tài có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM NHOM_DETAI WHERE MANHOM = @MANHOM)
     BEGIN
-        RAISERROR(N'Mã Nhóm Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Nhóm Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: DETAI (nếu thay đổi MADETAI)
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: GIANGVIEN (Trưởng nhóm)
     IF NOT EXISTS (SELECT 1 FROM GIANGVIEN WHERE MAGV = @TRUONGNHOM)
     BEGIN
-        RAISERROR(N'Mã Trưởng nhóm không tồn tại.', 16, 1)
+        PRINT(N'Mã Trưởng nhóm không tồn tại.', 16, 1)
         RETURN
     END
     
     -- Kiểm tra Trưởng nhóm mới có phải là thành viên của nhóm hiện tại không (tùy thuộc quy tắc)
     IF NOT EXISTS (SELECT 1 FROM THANHVIEN_NHOM WHERE MANHOM = @MANHOM AND MAGV = @TRUONGNHOM)
     BEGIN
-        RAISERROR(N'Trưởng nhóm mới phải là thành viên hiện tại của nhóm.', 16, 1)
+        PRINT(N'Trưởng nhóm mới phải là thành viên hiện tại của nhóm.', 16, 1)
         -- Hoặc cần thêm thủ tục cập nhật vai trò của trưởng nhóm trong THANHVIEN_NHOM nếu cần
     END
 
@@ -798,7 +798,7 @@ BEGIN
     -- Kiểm tra ràng buộc: THANHVIEN_NHOM
     IF EXISTS (SELECT 1 FROM THANHVIEN_NHOM WHERE MANHOM = @MANHOM)
     BEGIN
-        RAISERROR(N'Không thể xóa. Nhóm đang có Thành viên. Vui lòng xóa Thành viên trước.', 16, 1)
+        PRINT(N'Không thể xóa. Nhóm đang có Thành viên. Vui lòng xóa Thành viên trước.', 16, 1)
         RETURN
     END
 
@@ -817,21 +817,21 @@ BEGIN
     -- Kiểm tra ràng buộc: NHOM_DETAI
     IF NOT EXISTS (SELECT 1 FROM NHOM_DETAI WHERE MANHOM = @MANHOM)
     BEGIN
-        RAISERROR(N'Mã Nhóm không tồn tại.', 16, 1)
+        PRINT(N'Mã Nhóm không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: GIANGVIEN
     IF NOT EXISTS (SELECT 1 FROM GIANGVIEN WHERE MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Mã Giảng viên không tồn tại.', 16, 1)
+        PRINT(N'Mã Giảng viên không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra đã là thành viên chưa
     IF EXISTS (SELECT 1 FROM THANHVIEN_NHOM WHERE MANHOM = @MANHOM AND MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Giảng viên đã là thành viên của nhóm này.', 16, 1)
+        PRINT(N'Giảng viên đã là thành viên của nhóm này.', 16, 1)
         RETURN
     END
 
@@ -853,7 +853,7 @@ BEGIN
     -- Kiểm tra Thành viên có tồn tại trong Nhóm không
     IF NOT EXISTS (SELECT 1 FROM THANHVIEN_NHOM WHERE MANHOM = @MANHOM AND MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Giảng viên không phải là Thành viên của Nhóm này.', 16, 1)
+        PRINT(N'Giảng viên không phải là Thành viên của Nhóm này.', 16, 1)
         RETURN
     END
 
@@ -872,14 +872,14 @@ BEGIN
     -- Kiểm tra Thành viên có tồn tại trong Nhóm không
     IF NOT EXISTS (SELECT 1 FROM THANHVIEN_NHOM WHERE MANHOM = @MANHOM AND MAGV = @MAGV)
     BEGIN
-        RAISERROR(N'Giảng viên không phải là Thành viên của Nhóm này.', 16, 1)
+        PRINT(N'Giảng viên không phải là Thành viên của Nhóm này.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra xem Giảng viên có đang là Trưởng nhóm không
     IF EXISTS (SELECT 1 FROM NHOM_DETAI WHERE MANHOM = @MANHOM AND TRUONGNHOM = @MAGV)
     BEGIN
-        RAISERROR(N'Không thể xóa. Giảng viên này đang là Trưởng nhóm. Vui lòng chỉ định Trưởng nhóm mới trước.', 16, 1)
+        PRINT(N'Không thể xóa. Giảng viên này đang là Trưởng nhóm. Vui lòng chỉ định Trưởng nhóm mới trước.', 16, 1)
         RETURN
     END
 
@@ -900,14 +900,14 @@ BEGIN
     -- Kiểm tra ràng buộc: HOIDONG
     IF NOT EXISTS (SELECT 1 FROM HOIDONG WHERE MAHOIDONG = @MAHOIDONG)
     BEGIN
-        RAISERROR(N'Mã Hội đồng không tồn tại.', 16, 1)
+        PRINT(N'Mã Hội đồng không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra Mã Thành viên đã tồn tại chưa
     IF EXISTS (SELECT 1 FROM THANHVIEN_HD WHERE MATHANHVIEN = @MATHANHVIEN)
     BEGIN
-        RAISERROR(N'Mã Thành viên Hội đồng đã tồn tại.', 16, 1)
+        PRINT(N'Mã Thành viên Hội đồng đã tồn tại.', 16, 1)
         RETURN
     END
 
@@ -925,14 +925,14 @@ BEGIN
     -- Kiểm tra Thành viên có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM THANHVIEN_HD WHERE MATHANHVIEN = @MATHANHVIEN)
     BEGIN
-        RAISERROR(N'Mã Thành viên Hội đồng không tồn tại.', 16, 1)
+        PRINT(N'Mã Thành viên Hội đồng không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: HOIDONG (nếu thay đổi MAHOIDONG)
     IF NOT EXISTS (SELECT 1 FROM HOIDONG WHERE MAHOIDONG = @MAHOIDONG)
     BEGIN
-        RAISERROR(N'Mã Hội đồng không tồn tại.', 16, 1)
+        PRINT(N'Mã Hội đồng không tồn tại.', 16, 1)
         RETURN
     END
 
@@ -950,7 +950,7 @@ BEGIN
     -- Kiểm tra ràng buộc: DANHGIA
     IF EXISTS (SELECT 1 FROM DANHGIA WHERE MATHANHVIEN = @MATHANHVIEN)
     BEGIN
-        RAISERROR(N'Không thể xóa. Thành viên này đã thực hiện Đánh giá Đề tài.', 16, 1)
+        PRINT(N'Không thể xóa. Thành viên này đã thực hiện Đánh giá Đề tài.', 16, 1)
         RETURN
     END
 
@@ -969,21 +969,21 @@ BEGIN
     -- Kiểm tra ràng buộc: THANHVIEN_HD
     IF NOT EXISTS (SELECT 1 FROM THANHVIEN_HD WHERE MATHANHVIEN = @MATHANHVIEN)
     BEGIN
-        RAISERROR(N'Mã Thành viên Hội đồng không tồn tại.', 16, 1)
+        PRINT(N'Mã Thành viên Hội đồng không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra ràng buộc: DETAI
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra đã đánh giá chưa
     IF EXISTS (SELECT 1 FROM DANHGIA WHERE MATHANHVIEN = @MATHANHVIEN AND MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Thành viên này đã đánh giá Đề tài này rồi. Vui lòng sử dụng thủ tục Sửa.', 16, 1)
+        PRINT(N'Thành viên này đã đánh giá Đề tài này rồi. Vui lòng sử dụng thủ tục Sửa.', 16, 1)
         RETURN
     END
 
@@ -1002,7 +1002,7 @@ BEGIN
     -- Kiểm tra Đánh giá có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM DANHGIA WHERE MATHANHVIEN = @MATHANHVIEN AND MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không tìm thấy Đánh giá này.', 16, 1)
+        PRINT(N'Không tìm thấy Đánh giá này.', 16, 1)
         RETURN
     END
 
@@ -1021,7 +1021,7 @@ BEGIN
     -- Kiểm tra Đánh giá có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM DANHGIA WHERE MATHANHVIEN = @MATHANHVIEN AND MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Không tìm thấy Đánh giá này.', 16, 1)
+        PRINT(N'Không tìm thấy Đánh giá này.', 16, 1)
         RETURN
     END
 
@@ -1038,14 +1038,14 @@ BEGIN
     -- Kiểm tra ràng buộc: DETAI
     IF NOT EXISTS (SELECT 1 FROM DETAI WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Mã Đề tài không tồn tại.', 16, 1)
+        PRINT(N'Mã Đề tài không tồn tại.', 16, 1)
         RETURN
     END
 
     -- Kiểm tra Kết quả Đánh giá đã tồn tại chưa
     IF EXISTS (SELECT 1 FROM KETQUA_DANHGIA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này đã có Kết quả Đánh giá. Vui lòng sử dụng thủ tục Sửa.', 16, 1)
+        PRINT(N'Đề tài này đã có Kết quả Đánh giá. Vui lòng sử dụng thủ tục Sửa.', 16, 1)
         RETURN
     END
 
@@ -1062,7 +1062,7 @@ BEGIN
     -- Kiểm tra Kết quả Đánh giá có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM KETQUA_DANHGIA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này chưa có Kết quả Đánh giá để sửa. Vui lòng sử dụng thủ tục Thêm.', 16, 1)
+        PRINT(N'Đề tài này chưa có Kết quả Đánh giá để sửa. Vui lòng sử dụng thủ tục Thêm.', 16, 1)
         RETURN
     END
 
@@ -1079,7 +1079,7 @@ BEGIN
     -- Kiểm tra Kết quả Đánh giá có tồn tại không
     IF NOT EXISTS (SELECT 1 FROM KETQUA_DANHGIA WHERE MADETAI = @MADETAI)
     BEGIN
-        RAISERROR(N'Đề tài này không có Kết quả Đánh giá để xóa.', 16, 1)
+        PRINT(N'Đề tài này không có Kết quả Đánh giá để xóa.', 16, 1)
         RETURN
     END
 
@@ -1144,3 +1144,178 @@ SELECT * FROM KETQUA_DANHGIA
 EXEC sp_InsertKetQuaDanhGia 'DT04', 9.1;
 EXEC sp_UpdateKetQuaDanhGia 'DT04', 9.5;
 EXEC sp_DeleteKetQuaDanhGia 'DT04';
+
+CREATE OR ALTER VIEW V_ThongTinDeTai AS
+SELECT 
+    DETAI.MADETAI,
+    DETAI.TENDETAI,
+    GIANGVIEN.TENGV AS CHUNHIEM,
+    CAP_DETAI.TENCAP AS CapDeTai,
+    LINHVUC.TENLINHVUC AS LoaiDeTai,
+    CHIPHI.SOTIENCHI,
+    DETAI.NAM_TH,
+    KETQUA.TIENDO,
+    KETQUA.KQNC,
+    KETQUA_DANHGIA.DIEM_TB
+FROM DETAI, GIANGVIEN, NHOM_DETAI, CAP_DETAI, LINHVUC, CHIPHI, KETQUA,KETQUA_DANHGIA
+WHERE GIANGVIEN.MAGV = NHOM_DETAI.TRUONGNHOM
+  AND NHOM_DETAI.MADETAI = DETAI.MADETAI
+  AND CAP_DETAI.MACAP = DETAI.MACAP
+  AND LINHVUC.MALINHVUC = DETAI.MALINHVUC
+  AND CHIPHI.MADETAI = DETAI.MADETAI
+  AND KETQUA.MADETAI = DETAI.MADETAI
+  AND KETQUA_DANHGIA.MADETAI = DETAI.MADETAI;
+SELECT * FROM V_ThongTinDeTai
+
+CREATE OR ALTER VIEW V_NhomNghienCuu AS
+SELECT 
+    NHOM_DETAI.MANHOM,
+    NHOM_DETAI.TENNHOM,
+    DETAI.TENDETAI,
+    GIANGVIEN.TENGV AS TRUONGNHOM,
+    NHOM_DETAI.SOLUONG_GV_NHOM
+FROM NHOM_DETAI, GIANGVIEN, DETAI
+WHERE NHOM_DETAI.TRUONGNHOM = GIANGVIEN.MAGV
+  AND NHOM_DETAI.MADETAI = DETAI.MADETAI;
+SELECT * FROM V_NhomNghienCuu
+
+CREATE OR ALTER VIEW V_ThongKeChiPhi AS
+SELECT 
+    DETAI.MADETAI,
+    DETAI.TENDETAI,
+    SUM(CHIPHI.SOTIENCHI) AS TongChiPhi
+FROM DETAI, CHIPHI
+WHERE DETAI.MADETAI = CHIPHI.MADETAI
+GROUP BY DETAI.MADETAI, DETAI.TENDETAI;
+SELECT * FROM V_ThongKeChiPhi
+
+CREATE OR ALTER VIEW V_KetQuaDeTai AS
+SELECT 
+    DETAI.MADETAI,
+    DETAI.TENDETAI,
+    KETQUA.TIENDO,
+    KETQUA.KQNC,
+    KETQUA_DANHGIA.DIEM_TB
+FROM DETAI, KETQUA,KETQUA_DANHGIA
+WHERE DETAI.MADETAI = KETQUA.MADETAI AND DETAI.MADETAI=KETQUA_DANHGIA.MADETAI;
+SELECT * FROM V_KetQuaDeTai
+
+CREATE OR ALTER VIEW V_Thongtin_GiangVien AS
+SELECT 
+    GIANGVIEN.MAGV,
+    GIANGVIEN.TENGV,
+    KHOA.TENKHOA,
+    KHOA.TRUONGKHOA
+FROM GIANGVIEN, KHOA
+WHERE GIANGVIEN.MAKHOA = KHOA.MAKHOA;
+SELECT * FROM V_Thongtin_GiangVien
+
+CREATE OR ALTER VIEW V_DeTaiTheoNam AS
+SELECT 
+    DETAI.MADETAI,
+    DETAI.TENDETAI,
+    DETAI.NAM_TH,
+    CAP_DETAI.TENCAP,
+    LINHVUC.TENLINHVUC
+FROM DETAI, CAP_DETAI, LINHVUC
+WHERE DETAI.MACAP = CAP_DETAI.MACAP
+  AND DETAI.MALINHVUC = LINHVUC.MALINHVUC;
+  SELECT * FROM V_DeTaiTheoNam
+--Hàm tính tông chi phi nghiên cứu của một đề tài 
+CREATE FUNCTION FN_TongChiPhi(@MaDeTai CHAR(10))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Tong INT
+    SELECT @Tong = SUM(SOTIENCHI)
+    FROM CHIPHI
+    WHERE MADETAI = @MaDeTai
+    RETURN ISNULL(@Tong, 0)
+END
+SELECT dbo.FN_TongChiPhi('DT01') AS TongChiPhi_DT01
+
+--Hàm tính điểm trung bình đánh giá của đề tài
+CREATE FUNCTION FN_TinhDiemTB(@MaDeTai CHAR(10))
+RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @DiemTB FLOAT
+    SELECT @DiemTB = AVG(DIEM)
+    FROM DANHGIA
+    WHERE MADETAI = @MaDeTai
+    RETURN @DiemTB
+END
+SELECT dbo.FN_TinhDiemTB('DT03') AS DiemTB_DT03
+select * from DANHGIA
+
+CREATE PROCEDURE SP_CapNhatKetQuaDanhGia
+AS
+BEGIN
+    DELETE FROM KETQUA_DANHGIA
+    INSERT INTO KETQUA_DANHGIA(MADETAI, DIEM_TB)
+    SELECT MADETAI, AVG(DIEM)
+    FROM DANHGIA
+    GROUP BY MADETAI
+END
+EXEC SP_CapNhatKetQuaDanhGia
+
+CREATE PROCEDURE SP_CapNhatSoLuongGVNhom
+AS
+BEGIN
+    UPDATE NHOM_DETAI
+    SET SOLUONG_GV_NHOM = (
+        SELECT COUNT(*)
+        FROM THANHVIEN_NHOM
+        WHERE THANHVIEN_NHOM.MANHOM = NHOM_DETAI.MANHOM
+    )
+END
+EXEC SP_CapNhatSoLuongGVNhom
+
+
+CREATE PROCEDURE SP_CapNhatSoLuongGVKhoa
+AS
+BEGIN
+    UPDATE KHOA
+    SET SOLUONG_GV_KHOA = (
+        SELECT COUNT(DISTINCT MAGV)
+        FROM GIANGVIEN
+        WHERE GIANGVIEN.MAKHOA = KHOA.MAKHOA
+        AND MAGV IN (SELECT MAGV FROM THANHVIEN_NHOM)
+    )
+END
+EXEC SP_CapNhatSoLuongGVKhoa
+
+CREATE OR ALTER PROCEDURE sp_TraCuuThongTinDeTai
+    @MaDeTai NVARCHAR(10)
+AS
+BEGIN
+    SELECT 
+        DETAI.MADETAI,
+        DETAI.TENDETAI,
+        GIANGVIEN.TENGV AS CHUNHIEM,
+        CAP_DETAI.TENCAP AS CapDeTai,
+        LINHVUC.TENLINHVUC AS LinhVuc,
+        dbo.fn_TongChiPhi(DETAI.MADETAI) AS TongChiPhi,
+        DETAI.NAM_TH,
+        KETQUA.TIENDO,
+        KETQUA.KQNC
+    FROM DETAI, GIANGVIEN, NHOM_DETAI, CAP_DETAI, LINHVUC, CHIPHI, KETQUA
+    WHERE GIANGVIEN.MAGV = NHOM_DETAI.TRUONGNHOM
+      AND NHOM_DETAI.MADETAI = DETAI.MADETAI
+      AND CAP_DETAI.MACAP = DETAI.MACAP
+      AND LINHVUC.MALINHVUC = DETAI.MALINHVUC
+      AND DETAI.MADETAI = CHIPHI.MADETAI
+      AND DETAI.MADETAI = KETQUA.MADETAI
+      AND DETAI.MADETAI = @MaDeTai
+    GROUP BY 
+        DETAI.MADETAI,
+        DETAI.TENDETAI,
+        GIANGVIEN.TENGV,
+        CAP_DETAI.TENCAP,
+        LINHVUC.TENLINHVUC,
+        DETAI.NAM_TH,
+        KETQUA.TIENDO,
+        KETQUA.KQNC;
+END;
+SELECT * FROM DETAI
+EXEC sp_TraCuuThongTinDeTai @MaDeTai = 'DT01';
